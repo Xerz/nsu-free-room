@@ -56,7 +56,7 @@ nsu-free-room/
 
 3. **Запустите сервисы:**
    ```sh
-   docker-compose up --build
+   docker-compose up -d --build
    ```
 
 4. **Проверьте работу бота:** Найдите вашего бота в Telegram и начните диалог.
@@ -110,7 +110,7 @@ nsu-free-room/
 
 3. **Запустите сервисы:**
    ```sh
-   docker-compose -f docker-compose-ghcr.yml up
+   docker-compose -f docker-compose-ghcr.yml up -d
    ```
 
 ---
