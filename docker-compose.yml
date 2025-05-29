@@ -1,0 +1,29 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  bot:
+    build:
+      context: ./bot
+    env_file:
+      - ./bot/.env
+    depends_on:
+      - redis
+    restart: unless-stopped
+    volumes:
+      - ./shared:/app/shared
+
+  scraper:
+    build:
+      context: ./scraper
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    restart: unless-stopped
+    volumes:
+      - ./shared:/app/shared

@@ -1,0 +1,4 @@
+.env
+/legacy/
+/shared/bot_answers.json
+/shared/tts.json
