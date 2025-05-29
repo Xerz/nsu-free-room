@@ -6,10 +6,9 @@ services:
       - 6379
 
   bot:
-    build:
-      context: ./bot
+    image: ghcr.io/xerz/nsu-free-room-bot:latest
     env_file:
-      - ./bot/.env
+      - bot/.env
     depends_on:
       - redis
     restart: unless-stopped
@@ -17,8 +16,7 @@ services:
       - ./shared:/app/shared
 
   scraper:
-    build:
-      context: ./scraper
+    image: ghcr.io/xerz/nsu-free-room-scraper:latest
     depends_on:
       - redis
     environment:

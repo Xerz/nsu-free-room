@@ -1,6 +1,8 @@
 
 # NSU Free Room Bot
 
+> Бот запущен и доступен по адресу: [@nsu_temperature_bot](https://t.me/nsu_temperature_bot)
+
 Телеграм-бот для поиска свободных аудиторий в НГУ по расписанию.
 
 ## Описание кейса
@@ -58,6 +60,60 @@ nsu-free-room/
    ```
 
 4. **Проверьте работу бота:** Найдите вашего бота в Telegram и начните диалог.
+
+---
+
+### Альтернативный запуск через ghcr.io
+
+Вы можете использовать готовые образы из GitHub Container Registry (ghcr.io), не собирая их локально.
+
+1. **Создайте файл окружения для бота** в папке `bot` и папку `shared`, если её ещё нет:
+
+   ```sh
+   mkdir -p shared
+   touch bot/.env
+   ```
+
+   Убедитесь, что в `bot/.env` указан правильный токен бота.
+
+2. **Создайте файл `docker-compose-ghcr.yml`** (или используйте уже имеющийся):
+
+   ```yaml
+   services:
+     redis:
+       image: redis:7-alpine
+       restart: unless-stopped
+       expose:
+         - 6379
+
+     bot:
+       image: ghcr.io/xerz/nsu-free-room-bot:latest
+       env_file:
+         - ./bot/.env
+       depends_on:
+         - redis
+       restart: unless-stopped
+       volumes:
+         - ./shared:/app/shared
+
+     scraper:
+       image: ghcr.io/xerz/nsu-free-room-scraper:latest
+       depends_on:
+         - redis
+       environment:
+         - REDIS_HOST=redis
+         - REDIS_PORT=6379
+       restart: unless-stopped
+       volumes:
+         - ./shared:/app/shared
+   ```
+
+3. **Запустите сервисы:**
+   ```sh
+   docker-compose -f docker-compose-ghcr.yml up
+   ```
+
+---
 
 ## Переменные окружения
 
