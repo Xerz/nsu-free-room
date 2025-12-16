@@ -47,10 +47,20 @@ except Exception as e:
     logging.error(f"Не удалось получить ссылки на расписания аудиторий")
     raise
 
-timetable_by_room = {
-    url: pd.read_html(io.StringIO(session.get(url).text))[1].to_numpy().tolist()
-    for url in room_links
-}
+timetable_by_room = {}
+
+for url in room_links:
+    try:
+        html = session.get(url).text
+        timetable_by_room[url] = pd.read_html(io.StringIO(html))[1].to_numpy().tolist()
+        #     Каждый 50-ый показываем прогресс
+        if len(timetable_by_room) % 50 == 0:
+            logging.info(f"Обработано {len(timetable_by_room)} из {len(room_links)} аудиторий")
+    except Exception as e:
+        logging.error(f"Не удалось обработать {url}: {e}")
+    finally:
+        time.sleep(1)  # спим 1 секунду после каждого запроса (даже если была ошибка)
+
 
 try:
     with codecs.open(os.path.join(SHARED_DIR, 'tts.json'), 'w', encoding='utf-8') as f:
