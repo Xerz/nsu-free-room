@@ -51,11 +51,12 @@ timetable_by_room = {}
 
 for url in room_links:
     try:
-        html = session.get(url).text
-        timetable_by_room[url] = pd.read_html(io.StringIO(html))[1].to_numpy().tolist()
         #     Каждый 50-ый показываем прогресс
         if len(timetable_by_room) % 50 == 0:
             logging.info(f"Обработано {len(timetable_by_room)} из {len(room_links)} аудиторий")
+
+        html = session.get(url).text
+        timetable_by_room[url] = pd.read_html(io.StringIO(html))[1].to_numpy().tolist()
     except Exception as e:
         logging.error(f"Не удалось обработать {url}: {e}")
     finally:
